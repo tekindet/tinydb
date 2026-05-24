@@ -3,16 +3,30 @@ package main
 import "testing"
 
 func TestNextToken(t *testing.T) {
-	input := `select*where=`
+	input := `
+		select student.name,
+		course.name 
+		join student on student.id = course.student_id 
+		where student.age > 20 `
 
 	tests := []struct {
 		expectedType    TokenType
 		expectedLiteral string
 	}{
 		{SELECT, "select"},
-		{ASTERISK, "*"},
-		{WHERE, "where"},
+		{IDENT, "student.name"},
+		{COMMA, ","},
+		{IDENT, "course.name"},
+		{JOIN, "join"},
+		{IDENT, "student"},
+		{ON, "on"},
+		{IDENT, "student.id"},
 		{EQUALS, "="},
+		{IDENT, "course.student_id"},
+		{WHERE, "where"},
+		{IDENT, "student.age"},
+		{GREATER_THAN, ">"},
+		{INT, "20"},
 	}
 
 	l := NewLexer(input)
