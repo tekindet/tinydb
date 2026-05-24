@@ -25,6 +25,7 @@ const (
 	COMMA     = ","
 	SEMICOLON = ";"
 	EQUALS    = "="
+	DOT = "."
 
 	AND = "AND"
 	OR  = "OR"

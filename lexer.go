@@ -42,11 +42,15 @@ func (l *Lexer) skipWhitespace() {
 func (l *Lexer) NextToken() Token {
 	var tok Token
 
+	l.skipWhitespace()
+
 	switch l.ch {
 	case '=':
 		tok = newToken(EQUALS, l.ch)
 	case ';':
 		tok = newToken(SEMICOLON, l.ch)
+	case '.':
+		tok = newToken(DOT, l.ch)
 	case '*':
 		tok = newToken(ASTERISK, l.ch)
 	case ',':
