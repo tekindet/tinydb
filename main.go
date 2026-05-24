@@ -1,28 +1,7 @@
 package main
 
-import (
-	"bufio"
-	"fmt"
-	"os"
-	"strings"
-)
+import "os"
 
 func main() {
-
-	scanner := bufio.NewScanner(os.Stdin)
-
-	for {
-		fmt.Print("nate@tinydb> ")
-		if !scanner.Scan() {
-			break
-		}
-
-		input := strings.TrimSpace(scanner.Text())
-
-		if input == "\\quit" || input == "\\q" || input == "exit" {
-			fmt.Println("bye")
-			break
-		}
-
-	}
+	StartRepl(os.Stdin, os.Stdout)
 }

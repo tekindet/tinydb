@@ -4,39 +4,39 @@ import "testing"
 
 func TestNextToken(t *testing.T) {
 	input := `
-		select student.name,
-		course.name 
-		join student on student.id = course.student_id 
-		where student.age > 20 `
+		select employee.name,
+		department.name 
+		join employee on employee.id = department.employee_id 
+		where employee.age < 30 `
 
 	tests := []struct {
 		expectedType    TokenType
 		expectedLiteral string
 	}{
 		{SELECT, "select"},
-		{IDENT, "student"},
+		{IDENT, "employee"},
 		{DOT, "."},
 		{IDENT, "name"},
 		{COMMA, ","},
-		{IDENT, "course"},
+		{IDENT, "department"},
 		{DOT, "."},
 		{IDENT, "name"},
 		{JOIN, "join"},
-		{IDENT, "student"},
+		{IDENT, "employee"},
 		{ON, "on"},
-		{IDENT, "student"},
+		{IDENT, "employee"},
 		{DOT, "."},
 		{IDENT, "id"},
 		{EQUALS, "="},
-		{IDENT, "course"},
+		{IDENT, "department"},
 		{DOT, "."},
-		{IDENT, "student_id"},
+		{IDENT, "employee_id"},
 		{WHERE, "where"},
-		{IDENT, "student"},
+		{IDENT, "employee"},
 		{DOT, "."},
 		{IDENT, "age"},
-		{GREATER_THAN, ">"},
-		{INT, "20"},
+		{LESS_THAN, "<"},
+		{INT, "30"},
 	}
 
 	l := NewLexer(input)

@@ -31,6 +31,7 @@ const (
 	OR  = "OR"
 	NOT = "NOT"
 	GREATER_THAN = ">"
+	LESS_THAN = "<"
 )
 
 var keywords = map[string]TokenType{
