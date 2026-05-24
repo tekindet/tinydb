@@ -32,5 +32,11 @@ func StartRepl(in io.Reader, out io.Writer) {
 			break
 		}
 
+		l := NewLexer(input)
+
+		for tok := l.NextToken(); tok.Type != EOF; tok = l.NextToken() {
+			fmt.Printf("%+v\n", tok)
+		}
+
 	}
 }
