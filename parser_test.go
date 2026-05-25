@@ -4,9 +4,11 @@ import "testing"
 
 func TestSelectStatement(t *testing.T) {
 	input := `
-		select * from users
-		select id,email,username from users
-		select id,email,username from users;
+		select * from users;
+
+		select id from users;
+
+		select email from users;
 	`
 
 	l := NewLexer(input)
@@ -38,13 +40,13 @@ func TestSelectStatement(t *testing.T) {
 
 func testSelectStatement(t *testing.T, s Statement, name string) bool {
 	if s.TokenLiteral() != "select" {
-		t.Errorf("s.TokenLiteral not 'select'. got=%q",s.TokenLiteral())
+		t.Errorf("s.TokenLiteral not 'select'. got=%q", s.TokenLiteral())
 		return false
 	}
 
-	selectStmt,ok := s.(*SelectStatement)
+	selectStmt, ok := s.(*SelectStatement)
 	if !ok {
-		t.Errorf("s not *SelectStatement. got=%T",s)
+		t.Errorf("s not *SelectStatement. got=%T", s)
 		return false
 	}
 

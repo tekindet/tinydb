@@ -7,7 +7,8 @@ func TestNextToken(t *testing.T) {
 		select employee.name,
 		department.name 
 		join employee on employee.id = department.employee_id 
-		where employee.age < 30 `
+		where employee.age < 30
+		`
 
 	tests := []struct {
 		expectedType    TokenType
@@ -37,6 +38,7 @@ func TestNextToken(t *testing.T) {
 		{IDENT, "age"},
 		{LESS_THAN, "<"},
 		{INT, "30"},
+		{EOF, ""},
 	}
 
 	l := NewLexer(input)

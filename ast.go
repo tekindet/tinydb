@@ -15,7 +15,7 @@ type Expression interface {
 }
 
 type Program struct {
-	Statements []Statement
+	Statements []Statement `json:"statements"`
 }
 
 func (p *Program) TokenLiteral() string {
@@ -27,9 +27,9 @@ func (p *Program) TokenLiteral() string {
 }
 
 type SelectStatement struct {
-	Token Token
-	Name  *Identifier
-	Value Expression
+	Token Token       `json:"token"`
+	Name  *Identifier `json:"name"`
+	Value Expression  `json:"value"`
 }
 
 func (s *SelectStatement) statementNode() {}
@@ -39,8 +39,8 @@ func (s *SelectStatement) TokenLiteral() string {
 }
 
 type Identifier struct {
-	Token Token
-	Value string
+	Token Token  `json:"token"`
+	Value string `json:"value"`
 }
 
 func (i *Identifier) expressionNode() {}
