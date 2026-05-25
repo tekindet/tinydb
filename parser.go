@@ -24,12 +24,13 @@ func (p *Parser) ParseProgram() *Program {
 	program := &Program{}
 	program.Statements = []Statement{}
 
-	for p.curToken.Type != EOF {
+	for p.curToken.Type != SEMICOLON {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
 		}
 	}
+
 	return program
 }
 

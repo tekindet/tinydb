@@ -4,7 +4,8 @@ import "testing"
 
 func TestSelectStatement(t *testing.T) {
 	input := `
-		select * from users;
+		select * from users
+		select id,email,username from users
 		select id,email,username from users;
 	`
 
