@@ -25,3 +25,26 @@ func (p *Program) TokenLiteral() string {
 		return ""
 	}
 }
+
+type SelectStatement struct {
+	Token Token
+	Name  *Identifier
+	Value Expression
+}
+
+func (s *SelectStatement) statementNode() {}
+
+func (s *SelectStatement) TokenLiteral() string {
+	return s.Token.Literal
+}
+
+type Identifier struct {
+	Token Token
+	Value string
+}
+
+func (i *Identifier) expressionNode() {}
+
+func (i *Identifier) TokenLiteral() string {
+	return i.Token.Literal
+}
