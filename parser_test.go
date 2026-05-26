@@ -9,6 +9,7 @@ func TestSelectStatement(t *testing.T) {
 		select id from users;
 
 		select email from users;
+
 	`
 
 	l := NewLexer(input)

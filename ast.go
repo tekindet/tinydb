@@ -27,15 +27,27 @@ func (p *Program) TokenLiteral() string {
 }
 
 type SelectStatement struct {
-	Token Token       `json:"token"`
-	Name  *Identifier `json:"name"`
-	Value Expression  `json:"value"`
+	Token   Token         `json:"token"`
+	Columns []Expression  `json:"columnns"`
+	From    *Identifier   `json:"from"`
+	Tables  []*Identifier `json:"tables"`
+	Where   Expression    `json:"where"`
+	Limit   Expression    `json:"limit"`
 }
 
 func (s *SelectStatement) statementNode() {}
 
 func (s *SelectStatement) TokenLiteral() string {
 	return s.Token.Literal
+}
+
+type WildcardExpression struct {
+	Token Token
+}
+
+func (w *WildcardExpression) expressionNode() {}
+func (w *WildcardExpression) TokenLiteral() string {
+	return w.Token.Literal
 }
 
 type Identifier struct {

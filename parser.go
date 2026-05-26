@@ -39,45 +39,87 @@ func (p *Parser) parseStatement() Statement {
 	switch p.curToken.Type {
 	case SELECT:
 		return p.parseSelectStatement()
+	case FROM:
+		return p.parseFromClause()
+	case INSERT:
+	// return p.parseInsertStatement()
+
+	default:
+		return nil
 	}
 	return nil
 }
 
 func (p *Parser) parseSelectStatement() *SelectStatement {
+	// select * from users or select id,name .... from users;
 	stmt := &SelectStatement{Token: p.curToken}
 
 	if !p.expectPeek(ASTERISK) && !p.expectPeek(IDENT) {
 		return nil
 	}
 
-	stmt.Name = &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	p.nextToken()
 
-	for p.peekToken.Type == COMMA {
-		p.nextToken()
-		p.nextToken()
+	if p.curToken.Type == ASTERISK {
+		stmt.Columns = append(stmt.Columns, &WildcardExpression{
+			Token: p.curToken,
+		})
+	}
 
-		if !p.expectPeek(IDENT) {
-			return nil
+	for p.curToken.Type == IDENT {
+		stmt.Columns = append(stmt.Columns, &Identifier{
+			Token: p.curToken,
+			Value: p.curToken.Literal,
+		})
+		if p.peekToken.Type == COMMA {
+			p.nextToken()
+			p.nextToken()
+		} else {
+			p.nextToken()
 		}
-
-		stmt.Name = &Identifier{Token: p.curToken, Value: p.curToken.Literal}
 	}
 
 	if !p.expectPeek(FROM) {
 		return nil
 	}
 
+	p.nextToken()
+
+	stmt.From = &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
 	if !p.expectPeek(IDENT) {
 		return nil
 	}
+	p.nextToken()
 
-	stmt.Value = &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	for p.curToken.Type == IDENT {
+		stmt.Tables = append(stmt.Tables, &Identifier{
+			Token: p.curToken,
+			Value: p.curToken.Literal,
+		})
+
+		if p.peekToken.Type == COMMA {
+			p.nextToken()
+			p.nextToken()
+		} else {
+			p.nextToken()
+		}
+
+	}
 
 	if !p.expectPeek(SEMICOLON) {
 		return nil
 	}
 
 	return stmt
+}
+
+func (p *Parser) parseFromClause() Expression {
+	if !p.expectPeek(IDENT) {
+		return nil
+	}
+
+	return &Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) expectPeek(t TokenType) bool {
