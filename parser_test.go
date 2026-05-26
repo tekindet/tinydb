@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"log"
+	"testing"
+)
 
 func TestSelectStatement(t *testing.T) {
 	input := `
@@ -8,7 +11,7 @@ func TestSelectStatement(t *testing.T) {
 
 		select id from users;
 
-		select email from users;
+		select email,username from users;
 
 	`
 
@@ -26,38 +29,47 @@ func TestSelectStatement(t *testing.T) {
 	}
 
 	tests := []struct {
-		expectedIdentifier string
+		numberOfColumns int
+		numberOfTables  int
 	}{
-		{"*"}, {"id"}, {"email"}, {"username"}, {"users"},
+		{
+			numberOfColumns: 1,
+			numberOfTables:  1,
+		},
+		{
+			numberOfColumns: 1,
+			numberOfTables:  1,
+		},
+		{
+			numberOfColumns: 2,
+			numberOfTables:  1,
+		},
 	}
 
 	for i, tt := range tests {
 		stmt := program.Statements[i]
-		if !testSelectStatement(t, stmt, tt.expectedIdentifier) {
+		if !testSelectStatement(t, stmt, tt.numberOfColumns, tt.numberOfTables) {
 			return
 		}
 	}
 }
 
-func testSelectStatement(t *testing.T, s Statement, name string) bool {
-	if s.TokenLiteral() != "select" {
-		t.Errorf("s.TokenLiteral not 'select'. got=%q", s.TokenLiteral())
-		return false
-	}
+func testSelectStatement(t *testing.T, s Statement, cols, tables int) bool {
 
 	selectStmt, ok := s.(*SelectStatement)
 	if !ok {
+		log.Fatal("here")
 		t.Errorf("s not *SelectStatement. got=%T", s)
 		return false
 	}
 
-	if selectStmt.Name.Value != name {
-		t.Errorf("selectStmt.Name.Value not '%s'. got=%s", name, selectStmt.Name.Value)
+	if len(selectStmt.Columns) != cols {
+		t.Errorf("s.Columns not '%d'. got=%d", cols, len(selectStmt.Columns))
 		return false
 	}
 
-	if selectStmt.Name.TokenLiteral() != name {
-		t.Errorf("selectStmt.Name.TokenLiteral() not '%s'. got=%s", name, selectStmt.Name.TokenLiteral())
+	if len(selectStmt.Tables) != tables {
+		t.Errorf("s.Tables not '%d'. got=%d", cols, len(selectStmt.Tables))
 		return false
 	}
 

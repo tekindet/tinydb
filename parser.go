@@ -40,10 +40,11 @@ func (p *Parser) parseStatement() Statement {
 	case SELECT:
 		return p.parseSelectStatement()
 	case FROM:
-		return p.parseFromClause()
+		// todo : implement this to see if the tests
+		// pass
+		return nil
 	case INSERT:
-	// return p.parseInsertStatement()
-
+		return nil
 	default:
 		return nil
 	}
