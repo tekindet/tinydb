@@ -1,5 +1,9 @@
 package main
 
+import (
+	"log"
+)
+
 type Parser struct {
 	l *Lexer
 
@@ -39,36 +43,33 @@ func (p *Parser) parseStatement() Statement {
 	switch p.curToken.Type {
 	case SELECT:
 		return p.parseSelectStatement()
-	case FROM:
-		// todo : implement this to see if the tests
-		// pass
-		return nil
 	case INSERT:
-		return nil
+		return p.parseInsertStatement()
 	default:
 		return nil
 	}
 	return nil
 }
 
-func (p *Parser) parseSelectStatement() *SelectStatement {
-	// select * from users or select id,name .... from users;
-	stmt := &SelectStatement{Token: p.curToken}
+func (p *Parser) parseInsertStatement() *InsertStatement {
+	stmt := &InsertStatement{Token: p.curToken}
+	return stmt
+}
 
-	if !p.expectPeek(ASTERISK) && !p.expectPeek(IDENT) {
-		return nil
-	}
+func (p *Parser) parseColumns() []Expression {
 
-	p.nextToken()
+	columns := []Expression{}
 
 	if p.curToken.Type == ASTERISK {
-		stmt.Columns = append(stmt.Columns, &WildcardExpression{
+		columns = append(columns, &WildcardExpression{
 			Token: p.curToken,
 		})
+
+		return columns
 	}
 
 	for p.curToken.Type == IDENT {
-		stmt.Columns = append(stmt.Columns, &Identifier{
+		columns = append(columns, &Identifier{
 			Token: p.curToken,
 			Value: p.curToken.Literal,
 		})
@@ -80,33 +81,22 @@ func (p *Parser) parseSelectStatement() *SelectStatement {
 		}
 	}
 
-	if !p.expectPeek(FROM) {
-		return nil
-	}
+	return columns
+}
+
+func (p *Parser) parseSelectStatement() *SelectStatement {
+	stmt := &SelectStatement{Token: p.curToken}
 
 	p.nextToken()
 
-	stmt.From = &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	columns := p.parseColumns()
 
-	if !p.expectPeek(IDENT) {
-		return nil
-	}
-	p.nextToken()
+	stmt.Columns = append(stmt.Columns, columns...)
 
-	for p.curToken.Type == IDENT {
-		stmt.Tables = append(stmt.Tables, &Identifier{
-			Token: p.curToken,
-			Value: p.curToken.Literal,
-		})
+	stmt.From = p.parseFromClause()
+	tables := p.parseTables()
 
-		if p.peekToken.Type == COMMA {
-			p.nextToken()
-			p.nextToken()
-		} else {
-			p.nextToken()
-		}
-
-	}
+	stmt.Tables = append(stmt.Tables, tables...)
 
 	if !p.expectPeek(SEMICOLON) {
 		return nil
@@ -115,12 +105,42 @@ func (p *Parser) parseSelectStatement() *SelectStatement {
 	return stmt
 }
 
-func (p *Parser) parseFromClause() Expression {
+func (p *Parser) parseFromClause() *Identifier {
+
+	if !p.expectPeek(FROM) {
+		log.Fatalf("expect from clause got %s", p.peekToken.Literal)
+	}
+
+	p.nextToken()
+
+	return &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+func (p *Parser) parseTables() []*Identifier {
 	if !p.expectPeek(IDENT) {
 		return nil
 	}
+	p.nextToken()
 
-	return &Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	tables := []*Identifier{}
+
+	for p.curToken.Type == IDENT {
+		tables = append(tables, &Identifier{
+			Token: p.curToken,
+			Value: p.curToken.Literal,
+		})
+
+		if p.peekToken.Type == COMMA {
+			p.nextToken()
+			p.nextToken()
+		} else {
+			p.nextToken()
+		}
+
+	}
+
+	return tables
+
 }
 
 func (p *Parser) expectPeek(t TokenType) bool {

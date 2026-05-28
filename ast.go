@@ -26,6 +26,20 @@ func (p *Program) TokenLiteral() string {
 	}
 }
 
+type InsertStatement struct {
+	Token   Token         `json:"token"`
+	Into    *Identifier   `json:"into"`
+	Table   *Identifier   `json:"table"`
+	Columns []Expression  `json:"columnns"`
+	Values  []*Identifier `json:"values"`
+}
+
+func (i *InsertStatement) statementNode() {}
+
+func (i *InsertStatement) TokenLiteral() string {
+	return i.Token.Literal
+}
+
 type SelectStatement struct {
 	Token   Token         `json:"token"`
 	Columns []Expression  `json:"columnns"`

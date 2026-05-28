@@ -18,20 +18,20 @@ const (
 	INSERT = "INSERT"
 	WHERE  = "WHERE"
 	FROM   = "FROM"
-	ON = "ON"
-	JOIN = "JOIN"
+	ON     = "ON"
+	JOIN   = "JOIN"
 
-	ASTERISK  = "*"
+	ASTERISK  = "ASTERISK"
 	COMMA     = ","
 	SEMICOLON = ";"
 	EQUALS    = "="
-	DOT = "."
+	DOT       = "."
 
-	AND = "AND"
-	OR  = "OR"
-	NOT = "NOT"
+	AND          = "AND"
+	OR           = "OR"
+	NOT          = "NOT"
 	GREATER_THAN = ">"
-	LESS_THAN = "<"
+	LESS_THAN    = "<"
 )
 
 var keywords = map[string]TokenType{
@@ -42,8 +42,8 @@ var keywords = map[string]TokenType{
 	"and":    AND,
 	"or":     OR,
 	"not":    NOT,
-	"join": JOIN,
-	"on": ON,
+	"join":   JOIN,
+	"on":     ON,
 }
 
 func LookupIdent(ident string) TokenType {
